@@ -27,7 +27,11 @@ b =[zeros(m,1); C*ones(m,1)];
 Aeq = Y';
 beq = 0;
 
-[alpha,fval,exitflag,output,lambda] = quadprog(H,f,A,b,Aeq,beq);
+ qp_options=optimset('Algorithm','interior-point-convex','MaxIter',50000);
+[alpha,fval,exitflag] = quadprog(H,f,A,b,Aeq,beq,[],[],[],qp_options)
+
+
+%[alpha,fval,exitflag,output,lambda] = quadprog(H,f,A,b,Aeq,beq);
 objective = -fval;
 
 %w = alpha'.*Y'*X;
@@ -38,7 +42,7 @@ SVMAT =[];
 SVMATPos = [];
 
 for i=1:m
-	if(alpha(i)>0)
+	if(alpha(i)>0.001)
 		SVMAT = [SVMAT; X(i,:)];
 		SVMATPos = [SVMATPos; i];
 	end
@@ -51,7 +55,7 @@ end
 count = 0;
 b = 0;
 for i=1:m
-	if(alpha(i)>0 && alpha(i)<C)
+	if(alpha(i)>0.001 && alpha(i)<C)
 %		b = 1/Y(i) - w'*X(i,:);
 		K = compute_kernel(SVMAT,X(i,:),kerneltype,r);
 		b = b + 1/Y(i) - (K'*(alpha(SVMATPos).*trainlabels(SVMATPos)));

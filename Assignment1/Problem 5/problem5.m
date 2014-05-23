@@ -15,13 +15,15 @@ Y = rawDataTrain(:,size(rawDataTrain,2));
 XTest = rawDataTest(:,1:size(rawDataTest,2)-1);
 YTest = rawDataTest(:,size(rawDataTest,2));
 
+foldedData = makeNFolds(X,Y,k);
+
 for i=1:size(C,1)
-    [kFoldTrainError(i)] = nFoldCrossValidation(k,X,Y,C(i),kerneltype,r);
+    [kFoldTrainError(i)] = nFoldCrossValidation(k,X,Y,C(i),kerneltype,r,foldedData);
 end
 j = find(kFoldTrainError == min(kFoldTrainError));
 kFoldTrainError
 
-%j=4
+% j=5
 
 model = SVM_learner(X, Y, C(j), kerneltype, r);
 

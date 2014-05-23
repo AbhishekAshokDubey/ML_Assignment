@@ -1,7 +1,7 @@
-function [errorSum] = nFoldCrossValidation(k,X,Y,C,kerneltype,r)
-
-foldedData = makeNFolds(X,Y,k);
+function [errorSum] = nFoldCrossValidation(k,X,Y,C,kerneltype,r,foldedData)
 errorSum = 0;
+
+% Note: Care for bins with not the same elements have not been taken yet
 
 for i=1:k
     Xtest =[];
@@ -27,5 +27,5 @@ for i=1:k
     errorSum = errorSum + error;
 end
 
-errorSum = errorSum/k;
+errorSum = errorSum/(k*size(Xtest,1));
 end
